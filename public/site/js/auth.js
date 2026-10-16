@@ -1,7 +1,8 @@
 /* =========================================================
    auth.js — centralized authentication helper.
 
-   APPLICATION ARCHITECTURE (Django + SQLite for M4.x; MySQL planned for M5):
+   APPLICATION ARCHITECTURE: Lovable Cloud (auth + database + storage).
+   The previous Django contract is kept below for reference only.
    Functions below call the real Django endpoints currently implemented.
    There is NO mock authentication: every call hits Django.
    Until the Django endpoints exist, calls fail with a clear
@@ -46,127 +47,67 @@ var Auth = {
 };
 
 /* ---------------------------------------------------------
-   2. CSRF-ready fetch wrapper (section 19)
-   Reads Django's csrftoken cookie and sends it as
-   X-CSRFToken. Credentials are always included so the
-   Django session cookie travels with every request.
+   2. Lovable Cloud bridge
+   All calls go to Lovable Cloud via window.CDDCloud
+   (js/cloud.bundle.js, built from src/cloud-bridge/entry.ts).
+   Sessions are real Cloud Auth sessions; passwords are hashed
+   server-side and never stored in the browser.
    --------------------------------------------------------- */
-function getCsrfToken() {
-  var match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
-  return match ? decodeURIComponent(match[1]) : "";
-}
-
-function apiFetch(url, options) {
-  var opts = Object.assign({}, options || {});
-  var method = String(opts.method || "GET").toUpperCase();
-  opts.method = method;
-  opts.credentials = "same-origin";
-  opts.headers = Object.assign({}, opts.headers || {});
-
-  if (opts.body && typeof opts.body !== "string") {
-    opts.body = JSON.stringify(opts.body);
-  }
-
-  function sendRequest() {
-    opts.headers["Content-Type"] = opts.headers["Content-Type"] || "application/json";
-    var csrf = getCsrfToken();
-    if (method !== "GET" && method !== "HEAD" && method !== "OPTIONS" && csrf) {
-      opts.headers["X-CSRFToken"] = csrf;
-    }
-    return fetch(AUTH_API_BASE + url, opts);
-  }
-
-  /* Login/register/forgot-password pages do not always render a public
-     navbar that triggers the session check. Ensure Django has issued its
-     CSRF cookie before the first unsafe request (POST/PUT/PATCH/DELETE). */
-  var needsCsrf = method !== "GET" && method !== "HEAD" && method !== "OPTIONS" && !getCsrfToken();
-  var prepare = needsCsrf
-    ? fetch(AUTH_API_BASE + "/api/auth/session/", { method: "GET", credentials: "same-origin" })
-        .then(function (response) {
-          if (!response.ok) {
-            throw new Error("Could not initialize the security session.");
-          }
-        })
-    : Promise.resolve();
-
-  return prepare
-    .then(sendRequest)
-    .catch(function (error) {
-      if (error instanceof AuthError) throw error;
-      throw new AuthError(
-        "NETWORK_ERROR",
-        "Cannot reach the authentication server. Check that Django is running at 127.0.0.1:8000.",
-      );
-    })
-    .then(function (response) {
-      if (response.status === 401) {
-        clearSessionCache();
-        Auth.state = AuthState.SESSION_EXPIRED;
-        throw new AuthError("SESSION_EXPIRED", "Your session has expired. Please log in again.");
-      }
-      return response.json().catch(function () {
-        throw new AuthError(
-          "BACKEND_UNAVAILABLE",
-          "The server returned an unreadable response. Check the Django terminal for errors.",
-        );
-      }).then(function (data) {
-        if (!response.ok) {
-          throw new AuthError(data.code || "AUTH_ERROR", data.message || "Unable to connect to the server.");
-        }
-        return data;
-      });
-    });
-}
-
 function AuthError(code, message) {
   this.code = code;
   this.message = message;
 }
 
-/* ---------------------------------------------------------
-   3. Backend configuration (Django only — no mock auth)
-   --------------------------------------------------------- */
-/* All auth traffic goes to the real Django backend. Change the
-   base URL here (or set window.CDD_API_BASE before this script). */
-var AUTH_API_BASE = (typeof window !== "undefined" && window.CDD_API_BASE) || "";
+var cloudReady = new Promise(function (resolve) {
+  if (window.CDDCloud) return resolve(window.CDDCloud);
+  window.addEventListener("cdd-cloud-ready", function () { resolve(window.CDDCloud); });
+  setTimeout(function () { if (!window.CDDCloud) resolve(null); }, 8000);
+});
+
+function cloud(method) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return cloudReady.then(function (c) {
+    if (!c) throw new AuthError("BACKEND_UNAVAILABLE", "The app could not connect to its server. Please reload the page.");
+    return c[method].apply(c, args);
+  }).catch(function (err) {
+    if (err instanceof AuthError) throw err;
+    if (err && err.code === "SESSION_EXPIRED") {
+      clearSessionCache();
+      Auth.state = AuthState.SESSION_EXPIRED;
+    }
+    throw new AuthError((err && err.code) || "AUTH_ERROR", (err && err.message) || "Something went wrong. Please try again.");
+  });
+}
+
+/* Kept for pages that read it; Cloud requests do not need CSRF tokens
+   because they authenticate with a bearer token, not cookies. */
+function getCsrfToken() { return ""; }
 
 /* ---------------------------------------------------------
    4. Public authentication API
-   Each function returns a Promise resolving to the user
-   object (or a status object for password flows).
    --------------------------------------------------------- */
-
+/* Registration policy: Cloud sends a confirmation email; the user
+   confirms, then logs in. Resolves { needsConfirmation, user }. */
 function authRegister(input) {
   Auth.state = AuthState.AUTHENTICATING;
-  return apiFetch("/api/auth/register/", { method: "POST", body: input })
-    .then(function (data) {
-      return afterAuthSuccess(data.user);
-    })
-    .catch(afterAuthError);
+  return cloud("register", input).then(function (res) {
+    if (res.user) afterAuthSuccess(res.user);
+    else Auth.state = AuthState.UNAUTHENTICATED;
+    return res;
+  }).catch(afterAuthError);
 }
 
-function authLogin(email, password, remember) {
+function authLogin(email, password) {
   Auth.state = AuthState.AUTHENTICATING;
-  return apiFetch("/api/auth/login/", {
-    method: "POST",
-    body: { email: email, password: password, remember: !!remember },
-  })
-    .then(function (data) {
-      return afterAuthSuccess(data.user);
-    })
-    .catch(afterAuthError);
+  return cloud("login", email, password).then(afterAuthSuccess).catch(afterAuthError);
 }
 
-/* Google: the ID token from Google Identity Services is sent
-   to Django for server-side verification. It is NEVER used
-   as the application session itself. */
-function authGoogle(credential) {
+function authGoogle() {
   Auth.state = AuthState.AUTHENTICATING;
-  return apiFetch("/api/auth/google/", { method: "POST", body: { credential: credential } })
-    .then(function (data) {
-      return afterAuthSuccess(data.user);
-    })
-    .catch(afterAuthError);
+  return cloud("google").then(function (res) {
+    if (res.user) afterAuthSuccess(res.user);
+    return res;
+  }).catch(afterAuthError);
 }
 
 function authLogout() {
@@ -176,19 +117,17 @@ function authLogout() {
     Auth.user = null;
     clearSessionCache();
   };
-  return apiFetch("/api/auth/logout/", { method: "POST" }).then(done).catch(done);
+  return cloud("logout").then(done).catch(done);
 }
 
-/* Session verification — used by protected pages. */
 function authCheckSession() {
-  return apiFetch("/api/auth/session/", { method: "GET" }).then(function (data) {
-    if (data.authenticated) {
+  return cloud("session").then(function (user) {
+    if (user) {
       Auth.state = AuthState.AUTHENTICATED;
-      Auth.user = data.user;
-      cacheSessionUser(data.user);
-      return data.user;
+      Auth.user = user;
+      cacheSessionUser(user);
+      return user;
     }
-    /* Backend says logged out: stale cache is discarded. */
     Auth.state = AuthState.UNAUTHENTICATED;
     Auth.user = null;
     clearSessionCache();
@@ -197,33 +136,24 @@ function authCheckSession() {
 }
 
 function authRequestPasswordReset(email) {
-  return apiFetch("/api/auth/password-reset/", { method: "POST", body: { email: email } });
+  return cloud("requestPasswordReset", email);
 }
 
-function authConfirmPasswordReset(token, password) {
-  return apiFetch("/api/auth/password-reset-confirm/", {
-    method: "POST",
-    body: { token: token, password: password },
-  });
+function authConfirmPasswordReset(password) {
+  return cloud("confirmPasswordReset", password);
 }
 
 function authChangePassword(currentPassword, newPassword) {
-  return apiFetch("/api/auth/change-password/", {
-    method: "POST",
-    body: { currentPassword: currentPassword, newPassword: newPassword },
-  });
+  return cloud("changePassword", currentPassword, newPassword);
 }
 
 function authUpdateProfile(fullName, phone) {
-  return apiFetch("/api/profile/", {
-    method: "PUT",
-    body: { fullName: fullName, phone: phone },
-  }).then(function (data) {
-    if (data.user) {
-      Auth.user = data.user;
-      cacheSessionUser(data.user);
+  return cloud("updateProfile", fullName, phone).then(function (user) {
+    if (user) {
+      Auth.user = user;
+      cacheSessionUser(user);
     }
-    return data.user;
+    return user;
   });
 }
 

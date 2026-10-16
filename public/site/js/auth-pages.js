@@ -13,6 +13,9 @@ function initLogin() {
   }
 
   consumeLoginNotice();
+  if (new URLSearchParams(window.location.search).get("confirmed")) {
+    showSuccess("login-success", "Your email is confirmed. You can now log in.");
+  }
 
   /* If already authenticated, go straight to the dashboard. */
   authCheckSession()
@@ -107,8 +110,17 @@ function initRegister() {
       phone: phone,
       password: password,
     })
-      .then(function () {
-        window.location.href = "dashboard.html";
+      .then(function (res) {
+        if (res && res.user) {
+          window.location.href = "dashboard.html";
+          return;
+        }
+        setButtonLoading(button, false);
+        form.reset();
+        showSuccess(
+          "register-success",
+          "Account created! We sent a confirmation link to " + email + ". Confirm your email, then log in.",
+        );
       })
       .catch(function (error) {
         setButtonLoading(button, false);
@@ -162,37 +174,32 @@ function initForgotPassword() {
 }
 
 /* ---------------- Reset password ---------------- */
-/* The Django email contains a link  reset-password.html?token=<code>.
-   If the page is opened without ?token= (for example in development, where the
-   email is printed in the Django terminal), the user can paste the code instead. */
+/* The emailed link signs the user into a short recovery session and
+   opens this page; the new password is then saved to Lovable Cloud. */
 function initResetPassword() {
   var form = document.getElementById("reset-form");
   if (!form) {
     return;
   }
+  var tokenGroup = document.getElementById("token-group");
+  if (tokenGroup) tokenGroup.classList.add("d-none");
 
-  var urlToken = new URLSearchParams(window.location.search).get("token");
-  if (urlToken) {
-    /* Keep the one-time code out of the address bar / browser history. */
-    window.history.replaceState(null, "", window.location.pathname);
-  } else {
-    document.getElementById("token-group").classList.remove("d-none");
-    document.getElementById("token-hint").classList.remove("d-none");
-  }
+  setTimeout(function () {
+    cloud("hasRecoverySession").then(function (ok) {
+      if (!ok) {
+        showError("reset-error", "This reset link is invalid or has expired. Please request a new one from Forgot Password.");
+      }
+    }).catch(function () {});
+  }, 600);
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     hideError("reset-error");
 
-    var token = urlToken || document.getElementById("resetToken").value.trim();
     var password = document.getElementById("password").value;
     var confirmPassword = document.getElementById("confirmPassword").value;
     var button = form.querySelector("button[type='submit']");
 
-    if (!token) {
-      showError("reset-error", "Please paste the reset code from your email.");
-      return;
-    }
     var strengthError = passwordStrengthError(password);
     if (strengthError) {
       showError("reset-error", strengthError);
@@ -204,8 +211,9 @@ function initResetPassword() {
     }
 
     setButtonLoading(button, true, "Updating…");
-    authConfirmPasswordReset(token, password)
+    authConfirmPasswordReset(password)
       .then(function () {
+        clearSessionCache();
         showSuccess("reset-success", "Your password has been updated. You can now log in.");
         form.classList.add("d-none");
       })
