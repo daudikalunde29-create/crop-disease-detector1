@@ -1,0 +1,6 @@
+Django>=5.1,<6.2
+djangorestframework>=3.15,<4
+# M4.2
+google-auth>=2.30,<3      # server-side verification of Google ID tokens
+requests>=2.31,<3         # HTTP transport google-auth uses to fetch Google's public keys
+Pillow>=10.3,<13          # server-side image validation for /api/predict/

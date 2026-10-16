@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Dashboard — Crop Disease Detector</title>
+    <meta name="description" content="Administration view for users, crops, diseases and predictions.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/components.css" rel="stylesheet">
+    <link href="../css/responsive.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar site-navbar sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
+            <span class="brand-badge"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+            <span class="brand-text">Admin — <span data-i18n="brand">Crop Disease Detector</span></span>
+        </a>
+        <a class="btn btn-outline-green" href="#" data-action="logout" data-i18n="logout">Logout</a>
+    </div>
+</nav>
+
+<main class="app-main container-fluid">
+    <h1 class="h3 mb-3">Admin Dashboard</h1>
+    <p class="note-box">Frontend UI only. Real data management will be handled by Django and MySQL.</p>
+
+    <div class="row row-cols-2 row-cols-lg-4 g-3 my-2">
+        <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
+            <div class="stat-value" id="admin-users">0</div><div class="stat-label">Total Users</div>
+        </div></div></div>
+        <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
+            <div class="stat-value" id="admin-crops">0</div><div class="stat-label">Total Crops</div>
+        </div></div></div>
+        <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
+            <div class="stat-value" id="admin-diseases">0</div><div class="stat-label">Total Diseases</div>
+        </div></div></div>
+        <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
+            <div class="stat-value" id="admin-predictions">0</div><div class="stat-label">Total Predictions</div>
+        </div></div></div>
+    </div>
+
+    <div class="card-soft mb-4"><div class="card-body">
+        <h2 class="h5">Crops</h2>
+        <div class="table-responsive">
+            <table class="table table-soft align-middle mb-0">
+                <thead><tr><th scope="col">Name</th><th scope="col">Scientific Name</th><th scope="col">Common Conditions</th></tr></thead>
+                <tbody id="admin-crop-body"></tbody>
+            </table>
+        </div>
+    </div></div>
+
+    <div class="card-soft mb-4"><div class="card-body">
+        <h2 class="h5">Diseases</h2>
+        <div class="table-responsive">
+            <table class="table table-soft align-middle mb-0">
+                <thead><tr><th scope="col">Name</th><th scope="col">Crop</th><th scope="col">About</th></tr></thead>
+                <tbody id="admin-disease-body"></tbody>
+            </table>
+        </div>
+    </div></div>
+
+    <div class="card-soft mb-4"><div class="card-body">
+        <h2 class="h5">Predictions</h2>
+        <div class="table-responsive">
+            <table class="table table-soft align-middle mb-0">
+                <thead><tr><th scope="col">Date</th><th scope="col">Crop</th><th scope="col">Condition</th><th scope="col">Confidence</th><th scope="col">Status</th></tr></thead>
+                <tbody id="admin-prediction-body"></tbody>
+            </table>
+        </div>
+    </div></div>
+
+    <div class="card-soft"><div class="card-body">
+        <h2 class="h5">Users</h2>
+        <p class="text-muted-soft mb-0">User management will be provided by the Django admin and API.</p>
+    </div></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/language.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

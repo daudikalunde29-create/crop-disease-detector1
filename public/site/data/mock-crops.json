@@ -1,0 +1,7 @@
+[
+    { "id": "crop-001", "name": "Maize", "scientificName": "Zea mays", "commonDiseases": "Northern Leaf Blight, Common Rust" },
+    { "id": "crop-002", "name": "Tomato", "scientificName": "Solanum lycopersicum", "commonDiseases": "Early Blight, Leaf Mould" },
+    { "id": "crop-003", "name": "Beans", "scientificName": "Phaseolus vulgaris", "commonDiseases": "Angular Leaf Spot" },
+    { "id": "crop-004", "name": "Rice", "scientificName": "Oryza sativa", "commonDiseases": "Rice Blast" },
+    { "id": "crop-005", "name": "Potato", "scientificName": "Solanum tuberosum", "commonDiseases": "Late Blight" }
+]

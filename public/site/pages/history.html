@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scan History — Crop Disease Detector</title>
+    <meta name="description" content="Review your previous crop scans, conditions detected and confidence levels.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/components.css" rel="stylesheet">
+    <link href="../css/responsive.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar site-navbar sticky-top app-topbar-mobile">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
+            <span class="brand-badge"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+            <span class="brand-text" data-i18n="brand">Crop Disease Detector</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#appMenu"
+                aria-controls="appMenu" aria-label="Open menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="appMenu" aria-labelledby="appMenuLabel">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title h6" id="appMenuLabel" data-i18n="brand">Crop Disease Detector</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body app-sidebar">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="dashboard.html"><i class="bi bi-grid" aria-hidden="true"></i><span data-i18n="dashboard">Dashboard</span></a>
+            <a class="nav-link" href="scan.html"><i class="bi bi-camera" aria-hidden="true"></i><span data-i18n="newScan">New Scan</span></a>
+            <a class="nav-link active" href="history.html"><i class="bi bi-clock-history" aria-hidden="true"></i><span data-i18n="scanHistory">Scan History</span></a>
+            <a class="nav-link" href="profile.html"><i class="bi bi-person" aria-hidden="true"></i><span data-i18n="profile">Profile</span></a>
+            <a class="nav-link" href="#" data-action="logout"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span data-i18n="logout">Logout</span></a>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <aside class="col-lg-3 col-xl-2 app-sidebar app-sidebar-desktop">
+            <a class="navbar-brand d-flex align-items-center gap-2 mb-4" href="dashboard.html">
+                <span class="brand-badge"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+                <span class="brand-text" data-i18n="brand">Crop Disease Detector</span>
+            </a>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="dashboard.html"><i class="bi bi-grid" aria-hidden="true"></i><span data-i18n="dashboard">Dashboard</span></a>
+                <a class="nav-link" href="scan.html"><i class="bi bi-camera" aria-hidden="true"></i><span data-i18n="newScan">New Scan</span></a>
+                <a class="nav-link active" href="history.html"><i class="bi bi-clock-history" aria-hidden="true"></i><span data-i18n="scanHistory">Scan History</span></a>
+                <a class="nav-link" href="profile.html"><i class="bi bi-person" aria-hidden="true"></i><span data-i18n="profile">Profile</span></a>
+                <a class="nav-link" href="#" data-action="logout"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span data-i18n="logout">Logout</span></a>
+            </nav>
+        </aside>
+
+        <main class="col-lg-9 col-xl-10 app-main">
+            <h1 class="h3 mb-3" data-i18n="scanHistory">Scan History</h1>
+            <div class="alert alert-info" role="status">
+                <strong>Temporary demo records.</strong> These sample rows demonstrate the history layout. They are shared preview data, not scans saved to your account and not real AI results.
+            </div>
+
+            <!-- Desktop table -->
+            <div class="history-table-wrap card-soft"><div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-soft align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Crop</th>
+                                <th scope="col">Condition</th>
+                                <th scope="col">Confidence</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </div></div>
+
+            <!-- Mobile cards -->
+            <div class="history-card-wrap" id="history-cards"></div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/language.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/history.js"></script>
+</body>
+</html>

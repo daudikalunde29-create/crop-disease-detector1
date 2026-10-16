@@ -1,0 +1,38 @@
+[
+    {
+        "id": "disease-001",
+        "name": "Northern Leaf Blight",
+        "crop": "Maize",
+        "about": "A fungal leaf disease of maize that is common in humid growing conditions.",
+        "symptoms": "Long grey-green or tan cigar-shaped lesions on the leaves, usually starting on the lower leaves.",
+        "management": "Placeholder: management guidance will be provided by the agronomy content stored in the backend database.",
+        "prevention": "Placeholder: prevention guidance such as crop rotation and resistant varieties will be provided by the backend."
+    },
+    {
+        "id": "disease-002",
+        "name": "Early Blight",
+        "crop": "Tomato",
+        "about": "A fungal disease that affects tomato leaves, stems and fruit.",
+        "symptoms": "Dark brown spots with concentric rings, often surrounded by yellowing tissue.",
+        "management": "Placeholder: management guidance will come from the backend database.",
+        "prevention": "Placeholder: prevention guidance will come from the backend database."
+    },
+    {
+        "id": "disease-003",
+        "name": "Healthy",
+        "crop": "Any",
+        "about": "No disease symptoms were detected in the submitted image.",
+        "symptoms": "Leaf colour and structure appear normal.",
+        "management": "No treatment needed. Continue normal crop care.",
+        "prevention": "Keep monitoring the field regularly."
+    },
+    {
+        "id": "disease-004",
+        "name": "Angular Leaf Spot",
+        "crop": "Beans",
+        "about": "A fungal disease of common beans affecting leaves and pods.",
+        "symptoms": "Angular brown lesions bounded by leaf veins.",
+        "management": "Placeholder: management guidance will come from the backend database.",
+        "prevention": "Placeholder: prevention guidance will come from the backend database."
+    }
+]
