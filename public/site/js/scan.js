@@ -68,6 +68,7 @@ function handleFileChange(input) {
   }
 
   document.getElementById("scan-error").classList.add("d-none");
+  document.getElementById("scan-success").classList.add("d-none");
   selectedFile = file;
   previewImage(file);
 }
@@ -83,8 +84,8 @@ function resetScanView() {
   document.getElementById("preview-section").classList.remove("d-none");
 }
 
-/* Sends the image to Django. Multipart body: the browser sets the
-   Content-Type (with boundary), so no Content-Type header is set here. */
+/* Uploads the image to Lovable Cloud and saves an honest "not_ready"
+   scan record. No disease, confidence or treatment is generated. */
 function handleScan() {
   var message = validateImage(selectedFile);
   if (message) {
@@ -96,66 +97,26 @@ function handleScan() {
   document.getElementById("preview-section").classList.add("d-none");
   document.getElementById("loading-section").classList.remove("d-none");
 
-  var formData = new FormData();
-  formData.append("image", selectedFile);
-
-  fetch((window.CDD_API_BASE || "") + "/api/predict/", {
-    method: "POST",
-    body: formData,
-    credentials: "same-origin",
-    headers: { "X-CSRFToken": getCsrfToken() },
-  })
-    .then(
-      function (response) {
-        return response
-          .json()
-          .catch(function () {
-            return null;
-          })
-          .then(function (data) {
-            return { status: response.status, ok: response.ok, data: data || {} };
-          });
-      },
-      function () {
-        throw new Error(
-          "Cannot reach the server. Please check that the backend is running and try again.",
-        );
-      },
-    )
-    .then(function (result) {
-      var data = result.data;
-
-      if (result.status === 401) {
-        redirectToLogin("Your session has expired. Please log in again.");
-        return;
-      }
-
-      /* Honest "no model yet" answer from Django (HTTP 503). */
-      if (data.status === "not_ready") {
-        throw new Error(
-          (data.message || "Prediction service is not available yet.") +
-            " Your image passed validation, but no result was generated.",
-        );
-      }
-
-      /* Future (M8): a stored prediction with an id opens the result page. */
-      if (result.ok && data.prediction && data.prediction.id) {
-        window.location.href = "result.html?id=" + encodeURIComponent(data.prediction.id);
-        return;
-      }
-
-      throw new Error(
-        data.message ||
-          (result.ok
-            ? "The server sent an unexpected response. No result was generated."
-            : "The image could not be analysed. Please try again."),
-      );
+  cloud("uploadScan", selectedFile)
+    .then(function () {
+      document.getElementById("loading-section").classList.add("d-none");
+      var ok = document.getElementById("scan-success");
+      ok.innerHTML =
+        "<strong>Image saved.</strong> Image upload is available, but AI disease prediction is not yet enabled. " +
+        'Your photo is stored in your <a href="history.html">Scan History</a>.';
+      ok.classList.remove("d-none");
+      selectedFile = null;
+      document.getElementById("camera-input").value = "";
+      document.getElementById("upload-input").value = "";
+      document.getElementById("choose-section").classList.remove("d-none");
     })
     .catch(function (error) {
+      if (error && error.code === "SESSION_EXPIRED") {
+        redirectToLogin(error.message);
+        return;
+      }
       resetScanView();
-      showScanError(
-        error && error.message ? error.message : "Something went wrong. Please try again.",
-      );
+      showScanError(error && error.message ? error.message : "Something went wrong. Please try again.");
     });
 }
 

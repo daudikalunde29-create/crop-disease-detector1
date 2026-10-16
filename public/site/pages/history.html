@@ -60,8 +60,13 @@
 
         <main class="col-lg-9 col-xl-10 app-main">
             <h1 class="h3 mb-3" data-i18n="scanHistory">Scan History</h1>
+            <h2 class="h5 mt-2">Your uploaded images</h2>
+            <p class="small text-muted-soft">Saved to your account. AI disease prediction is not yet enabled, so no diagnosis is shown.</p>
+            <div id="my-scans" class="mb-4"><p class="text-muted-soft">Loading…</p></div>
+
+            <h2 class="h5"><span class="badge text-bg-warning me-2">DEMO DATA</span>Sample history layout</h2>
             <div class="alert alert-info" role="status">
-                <strong>Temporary demo records.</strong> These sample rows demonstrate the history layout. They are shared preview data, not scans saved to your account and not real AI results.
+                <strong>Sample Data.</strong> These rows only demonstrate the future history layout. They are not your scans and not real AI results.
             </div>
 
             <!-- Desktop table -->
@@ -95,6 +100,7 @@
 <script src="../js/cloud.bundle.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/session.js"></script>
+<script src="../js/my-scans.js"></script>
 <script src="../js/history.js"></script>
 </body>
 </html>

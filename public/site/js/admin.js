@@ -4,7 +4,7 @@
    ========================================================= */
 
 function renderAdmin(crops, diseases, predictions) {
-  document.getElementById("admin-users").textContent = 12;
+  
   document.getElementById("admin-crops").textContent = crops.length;
   document.getElementById("admin-diseases").textContent = diseases.length;
   document.getElementById("admin-predictions").textContent = predictions.length;
@@ -60,6 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!user) {
       return;
     }
+    /* Real counts — Cloud only returns other users' rows to admins. */
+    cloud("adminStats").then(function (st) {
+      document.getElementById("admin-users").textContent = st.users;
+      var real = document.getElementById("admin-real-scans");
+      if (real) real.textContent = st.scans;
+    }).catch(function () {});
     // FUTURE DJANGO API: /api/crops/, /api/diseases/, /api/predictions/
     Promise.all([
       loadJSON("../data/mock-crops.json"),

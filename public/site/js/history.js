@@ -69,9 +69,11 @@ function renderHistory(scans) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  requireLogin();
+  requireLogin().then(function (user) {
+    if (user) loadMyScansInto(document.getElementById("my-scans"));
+  });
 
-  // FUTURE DJANGO API: fetch('/api/history/')
+  // DEMO DATA: layout sample only (data/mock-predictions.json)
   loadJSON("../data/mock-predictions.json")
     .then(renderHistory)
     .catch(function (error) {
