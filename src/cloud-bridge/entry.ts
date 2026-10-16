@@ -64,11 +64,11 @@ async function loadUser(): Promise<AppUser | null> {
   const isAdmin = (roles || []).some((r) => r.role === "admin");
   return {
     id: u.id,
-    name: (profile?.full_name || (u.user_metadata?.full_name as string) || "").trim(),
+    name: (profile?.full_name || (u.user_metadata?.['full_name'] as string) || "").trim(),
     email: u.email || profile?.email || "",
     phone: profile?.phone || "",
     role: isAdmin ? "admin" : "farmer",
-    provider: (u.app_metadata?.provider as string) || "email",
+    provider: (u.app_metadata?.['provider'] as string) || "email",
     createdAt: profile?.created_at || u.created_at,
   };
 }
@@ -170,7 +170,7 @@ const api = {
       if (file.size === 0 || file.size > MAX_FILE_SIZE) throw new CloudError("BAD_SIZE", "Please use an image under 5 MB.");
       const { data } = await supabase.auth.getUser();
       if (!data.user) throw new CloudError("SESSION_EXPIRED", "Your session has expired. Please log in again.");
-      const ext = file.type.split("/")[1].replace("jpeg", "jpg");
+      const ext = (file.type.split("/")[1] || "jpg").replace("jpeg", "jpg");
       const path = `${data.user.id}/${crypto.randomUUID()}.${ext}`;
       const up = await supabase.storage.from("scan-images").upload(path, file, { contentType: file.type });
       if (up.error) throw up.error;
