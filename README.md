@@ -84,3 +84,7 @@ Uploaded scan photos go into a private storage bucket (`scan-images`) with a 5 M
 
 - Connect a real crop-disease AI model so scans return genuine predictions instead of `not_ready`.
 - Email confirmation and password-reset emails.
+
+## License
+
+© 2026 Crop Disease Detector. All rights reserved.
