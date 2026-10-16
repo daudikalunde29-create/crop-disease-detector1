@@ -25,11 +25,14 @@
 
 <main class="app-main container-fluid">
     <h1 class="h3 mb-3">Admin Dashboard</h1>
-    <p class="note-box">Frontend UI only. Real data management will be handled by Django and MySQL.</p>
+    <p class="note-box">Access is checked by Lovable Cloud: only accounts with the admin role can read other users' data. <strong>Total Users</strong> and <strong>Uploaded Images</strong> are real; crops, diseases and predictions below are <span class="badge text-bg-warning">DEMO DATA</span>.</p>
 
     <div class="row row-cols-2 row-cols-lg-4 g-3 my-2">
         <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
             <div class="stat-value" id="admin-users">0</div><div class="stat-label">Total Users</div>
+        </div></div></div>
+        <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
+            <div class="stat-value" id="admin-real-scans">0</div><div class="stat-label">Uploaded Images</div>
         </div></div></div>
         <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
             <div class="stat-value" id="admin-crops">0</div><div class="stat-label">Total Crops</div>
@@ -38,7 +41,7 @@
             <div class="stat-value" id="admin-diseases">0</div><div class="stat-label">Total Diseases</div>
         </div></div></div>
         <div class="col"><div class="card-soft stat-card h-100"><div class="card-body">
-            <div class="stat-value" id="admin-predictions">0</div><div class="stat-label">Total Predictions</div>
+            <div class="stat-value" id="admin-predictions">0</div><div class="stat-label">Predictions (DEMO DATA)</div>
         </div></div></div>
     </div>
 
