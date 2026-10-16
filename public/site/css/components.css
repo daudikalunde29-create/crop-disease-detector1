@@ -1,0 +1,216 @@
+/* =========================================================
+   Crop Disease Detector — reusable components
+   ========================================================= */
+
+/* ---------- Soft cards ---------- */
+.card-soft {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+}
+
+.card-soft .card-body {
+    padding: 1.5rem;
+}
+
+.icon-tile {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #EAF3EA;
+    color: var(--primary-green);
+    font-size: 1.25rem;
+}
+
+.icon-tile-gradient {
+    background: var(--leaf-gradient);
+    color: var(--white);
+}
+
+.step-number {
+    position: absolute;
+    top: 0.9rem;
+    right: 1.1rem;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #DCEBDC;
+}
+
+.crop-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #EAF3EA;
+    color: var(--primary-green);
+    font-size: 1.4rem;
+}
+
+.note-box {
+    background-color: #EAF3EA;
+    color: var(--dark-green);
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* ---------- Auth pages ---------- */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(180deg, #EAF3EA 0%, var(--background) 45%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 460px;
+    background-color: var(--white);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lift);
+    padding: 2rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--light-green);
+    box-shadow: 0 0 0 0.2rem rgba(102, 187, 106, 0.25);
+}
+
+/* ---------- Dashboard shell ---------- */
+.app-sidebar {
+    background-color: var(--white);
+    border-right: 1px solid var(--border-color);
+    min-height: 100vh;
+    padding: 1.25rem 1rem;
+}
+
+.app-sidebar .nav-link {
+    color: var(--muted-text);
+    font-weight: 500;
+    border-radius: 12px;
+    padding: 0.65rem 0.9rem;
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.app-sidebar .nav-link:hover {
+    background-color: #EAF3EA;
+    color: var(--dark-green);
+}
+
+.app-sidebar .nav-link.active {
+    background: var(--leaf-gradient);
+    color: var(--white);
+}
+
+.app-main {
+    padding: 1.5rem;
+}
+
+.stat-card .stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--dark-green);
+}
+
+.stat-card .stat-label {
+    font-size: 0.85rem;
+    color: var(--muted-text);
+}
+
+/* ---------- Scan page ---------- */
+.upload-tile {
+    border: 2px dashed var(--light-green);
+    border-radius: var(--radius-lg);
+    background-color: var(--white);
+    padding: 2rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    width: 100%;
+}
+
+.upload-tile:hover,
+.upload-tile:focus-visible {
+    background-color: #EAF3EA;
+}
+
+.upload-tile .icon-tile {
+    margin: 0 auto 0.75rem;
+    display: flex;
+}
+
+.preview-image {
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.loading-stage {
+    color: var(--muted-text);
+    font-size: 0.95rem;
+    padding: 0.35rem 0;
+}
+
+.loading-stage.done {
+    color: var(--primary-green);
+    font-weight: 600;
+}
+
+/* ---------- Result ---------- */
+.confidence-bar .progress-bar {
+    background-color: var(--primary-green);
+}
+
+.confidence-bar.low .progress-bar {
+    background-color: var(--warning);
+}
+
+.badge-healthy {
+    background-color: #E4F3E5;
+    color: var(--dark-green);
+}
+
+.badge-disease {
+    background-color: #FBE5E5;
+    color: var(--danger);
+}
+
+.badge-low {
+    background-color: #FDF3DC;
+    color: #8A6100;
+}
+
+.info-block h3 {
+    font-size: 1.05rem;
+}
+
+/* ---------- Tables ---------- */
+.table-soft {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.table-soft thead th {
+    background-color: #EAF3EA;
+    color: var(--dark-green);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: none;
+}

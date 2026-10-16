@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scan Result — Crop Disease Detector</title>
+    <meta name="description" content="Predicted crop condition with confidence, symptoms, management and prevention guidance.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/components.css" rel="stylesheet">
+    <link href="../css/responsive.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar site-navbar sticky-top app-topbar-mobile">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
+            <span class="brand-badge"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+            <span class="brand-text" data-i18n="brand">Crop Disease Detector</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#appMenu"
+                aria-controls="appMenu" aria-label="Open menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="appMenu" aria-labelledby="appMenuLabel">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title h6" id="appMenuLabel" data-i18n="brand">Crop Disease Detector</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body app-sidebar">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="dashboard.html"><i class="bi bi-grid" aria-hidden="true"></i><span data-i18n="dashboard">Dashboard</span></a>
+            <a class="nav-link" href="scan.html"><i class="bi bi-camera" aria-hidden="true"></i><span data-i18n="newScan">New Scan</span></a>
+            <a class="nav-link" href="history.html"><i class="bi bi-clock-history" aria-hidden="true"></i><span data-i18n="scanHistory">Scan History</span></a>
+            <a class="nav-link" href="profile.html"><i class="bi bi-person" aria-hidden="true"></i><span data-i18n="profile">Profile</span></a>
+            <a class="nav-link" href="#" data-action="logout"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span data-i18n="logout">Logout</span></a>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <aside class="col-lg-3 col-xl-2 app-sidebar app-sidebar-desktop">
+            <a class="navbar-brand d-flex align-items-center gap-2 mb-4" href="dashboard.html">
+                <span class="brand-badge"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+                <span class="brand-text" data-i18n="brand">Crop Disease Detector</span>
+            </a>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="dashboard.html"><i class="bi bi-grid" aria-hidden="true"></i><span data-i18n="dashboard">Dashboard</span></a>
+                <a class="nav-link" href="scan.html"><i class="bi bi-camera" aria-hidden="true"></i><span data-i18n="newScan">New Scan</span></a>
+                <a class="nav-link" href="history.html"><i class="bi bi-clock-history" aria-hidden="true"></i><span data-i18n="scanHistory">Scan History</span></a>
+                <a class="nav-link" href="profile.html"><i class="bi bi-person" aria-hidden="true"></i><span data-i18n="profile">Profile</span></a>
+                <a class="nav-link" href="#" data-action="logout"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span data-i18n="logout">Logout</span></a>
+            </nav>
+        </aside>
+
+        <main class="col-lg-9 col-xl-10 app-main">
+            <h1 class="h3 mb-3" data-i18n="result">Result</h1>
+            <div class="alert alert-info py-2 small" role="status"><i class="bi bi-info-circle" aria-hidden="true"></i> <span data-i18n="demoNotice">Demo result: this prediction uses mock data. Real AI analysis will be connected later.</span></div>
+
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="card-soft"><div class="card-body">
+                        <img id="result-image" class="preview-image" src="../assets/images/hero-farmer.jpg" alt="Scanned crop leaf">
+                        <p class="small text-muted-soft mt-3 mb-0" id="result-date">—</p>
+                    </div></div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="card-soft mb-4"><div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div class="min-w-0">
+                                <p class="small text-muted-soft mb-1">Crop</p>
+                                <h2 class="h4 mb-2" id="result-crop">—</h2>
+                                <p class="small text-muted-soft mb-1">Condition</p>
+                                <h3 class="h5 mb-0" id="result-condition">—</h3>
+                            </div>
+                            <span id="result-status"></span>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between">
+                                <span class="small text-muted-soft" data-i18n="confidence">Confidence</span>
+                                <span class="fw-semibold" id="result-confidence">0%</span>
+                            </div>
+                            <div class="progress confidence-bar mt-1" role="progressbar" aria-label="Confidence"
+                                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="progress-bar" id="confidence-bar" style="width: 0;"></div>
+                            </div>
+                        </div>
+                    </div></div>
+
+                    <!-- Low confidence state -->
+                    <div id="low-confidence" class="alert alert-warning d-none" role="alert">
+                        <h2 class="h6">Prediction confidence is low</h2>
+                        <p class="mb-3">
+                            Please retake the photo with better lighting and make sure the affected leaf is
+                            clearly visible.
+                        </p>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <a class="btn btn-green" href="scan.html">Retake Photo</a>
+                            <a class="btn btn-outline-green" href="scan.html">Upload Another Image</a>
+                        </div>
+                    </div>
+
+                    <!-- Condition details -->
+                    <div id="condition-details" class="card-soft"><div class="card-body info-block">
+                        <h3 class="h6" data-i18n="symptoms">Symptoms</h3>
+                        <p class="text-muted-soft" id="result-symptoms">—</p>
+
+                        <h3 class="h6">About Condition</h3>
+                        <p class="text-muted-soft" id="result-about">—</p>
+
+                        <h3 class="h6" data-i18n="management">Management</h3>
+                        <p class="text-muted-soft" id="result-management">—</p>
+
+                        <h3 class="h6" data-i18n="prevention">Prevention</h3>
+                        <p class="text-muted-soft mb-0" id="result-prevention">—</p>
+                    </div></div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+                        <a class="btn btn-green btn-lg-action" href="scan.html" data-i18n="newScan">New Scan</a>
+                        <a class="btn btn-outline-green" href="history.html" data-i18n="scanHistory">Scan History</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/language.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/cloud.bundle.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/result.js"></script>
+</body>
+</html>

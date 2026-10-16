@@ -1,0 +1,7 @@
+[
+    { "id": "scan-001", "crop": "Maize", "condition": "Northern Leaf Blight", "confidence": 94, "status": "disease", "date": "25 Sep 2026" },
+    { "id": "scan-002", "crop": "Tomato", "condition": "Early Blight", "confidence": 88, "status": "disease", "date": "22 Sep 2026" },
+    { "id": "scan-003", "crop": "Beans", "condition": "Healthy", "confidence": 91, "status": "healthy", "date": "18 Sep 2026" },
+    { "id": "scan-004", "crop": "Rice", "condition": "Unclear image", "confidence": 42, "status": "low", "date": "15 Sep 2026" },
+    { "id": "scan-005", "crop": "Potato", "condition": "Healthy", "confidence": 96, "status": "healthy", "date": "10 Sep 2026" }
+]

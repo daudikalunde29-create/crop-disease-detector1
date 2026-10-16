@@ -1,0 +1,77 @@
+/* =========================================================
+   Crop Disease Detector — responsive rules
+   Tested widths: 360, 390, 576, 768, 992, 1200, 1440
+   ========================================================= */
+
+img,
+video,
+canvas {
+    max-width: 100%;
+}
+
+/* Small phones (360px - 575px) */
+@media (max-width: 575.98px) {
+    .section-padding {
+        padding: 2.25rem 0;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+    }
+
+    .btn-lg-action {
+        width: 100%;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.45rem;
+    }
+
+    .app-main {
+        padding: 1rem;
+    }
+
+    .navbar-brand span.brand-text {
+        font-size: 0.95rem;
+    }
+}
+
+/* Tablets */
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .section-padding {
+        padding: 3rem 0;
+    }
+}
+
+/* Sidebar only on large screens; offcanvas menu below that */
+@media (max-width: 991.98px) {
+    .app-sidebar-desktop {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .app-topbar-mobile {
+        display: none !important;
+    }
+}
+
+/* Large desktops */
+@media (min-width: 1400px) {
+    .app-main {
+        padding: 2rem 2.5rem;
+    }
+}
+
+/* History: cards on mobile, table on desktop */
+@media (max-width: 767.98px) {
+    .history-table-wrap {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .history-card-wrap {
+        display: none;
+    }
+}

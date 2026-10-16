@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scan Your Crop — Crop Disease Detector</title>
+    <meta name="description" content="Take a photo or upload a crop leaf image and start an AI-assisted analysis.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/components.css" rel="stylesheet">
+    <link href="../css/responsive.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar site-navbar sticky-top app-topbar-mobile">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
+            <span class="brand-badge"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+            <span class="brand-text" data-i18n="brand">Crop Disease Detector</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#appMenu"
+                aria-controls="appMenu" aria-label="Open menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="appMenu" aria-labelledby="appMenuLabel">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title h6" id="appMenuLabel" data-i18n="brand">Crop Disease Detector</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body app-sidebar">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="dashboard.html"><i class="bi bi-grid" aria-hidden="true"></i><span data-i18n="dashboard">Dashboard</span></a>
+            <a class="nav-link active" href="scan.html"><i class="bi bi-camera" aria-hidden="true"></i><span data-i18n="newScan">New Scan</span></a>
+            <a class="nav-link" href="history.html"><i class="bi bi-clock-history" aria-hidden="true"></i><span data-i18n="scanHistory">Scan History</span></a>
+            <a class="nav-link" href="profile.html"><i class="bi bi-person" aria-hidden="true"></i><span data-i18n="profile">Profile</span></a>
+            <a class="nav-link" href="#" data-action="logout"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span data-i18n="logout">Logout</span></a>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <aside class="col-lg-3 col-xl-2 app-sidebar app-sidebar-desktop">
+            <a class="navbar-brand d-flex align-items-center gap-2 mb-4" href="dashboard.html">
+                <span class="brand-badge"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+                <span class="brand-text" data-i18n="brand">Crop Disease Detector</span>
+            </a>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="dashboard.html"><i class="bi bi-grid" aria-hidden="true"></i><span data-i18n="dashboard">Dashboard</span></a>
+                <a class="nav-link active" href="scan.html"><i class="bi bi-camera" aria-hidden="true"></i><span data-i18n="newScan">New Scan</span></a>
+                <a class="nav-link" href="history.html"><i class="bi bi-clock-history" aria-hidden="true"></i><span data-i18n="scanHistory">Scan History</span></a>
+                <a class="nav-link" href="profile.html"><i class="bi bi-person" aria-hidden="true"></i><span data-i18n="profile">Profile</span></a>
+                <a class="nav-link" href="#" data-action="logout"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span data-i18n="logout">Logout</span></a>
+            </nav>
+        </aside>
+
+        <main class="col-lg-9 col-xl-10 app-main">
+            <h1 class="h3 mb-1" data-i18n="scanCrop">Scan Your Crop</h1>
+            <p class="text-muted-soft">Use a clear photo of one affected leaf in good light.</p>
+            <div class="alert alert-info" role="note" style="max-width: 720px;">
+                <strong>Early-stage testing:</strong> camera/upload and image preview are available now. AI analysis is not connected yet. You can open a clearly labelled sample result to test the result screen.
+                <div class="mt-2"><a class="btn btn-sm btn-outline-green" href="result.html?id=scan-001">View sample result (DEMO DATA)</a></div>
+            </div>
+
+            <div id="scan-error" class="alert alert-danger d-none" role="alert"></div>
+            <div id="scan-success" class="alert alert-success d-none" role="status" style="max-width: 720px;"></div>
+            <p class="small text-muted-soft" style="max-width: 720px;">Accepted formats: JPG, PNG, WEBP · Maximum size: 5 MB · You must be logged in.</p>
+
+            <!-- Choose image -->
+            <div id="choose-section" class="row g-3" style="max-width: 720px;">
+                <div class="col-sm-6">
+                    <button type="button" id="btn-camera" class="upload-tile">
+                        <span class="icon-tile icon-tile-gradient"><i class="bi bi-camera" aria-hidden="true"></i></span>
+                        <span class="d-block fw-semibold" data-i18n="takePhoto">Take Photo</span>
+                        <span class="d-block small text-muted-soft">Open your phone camera</span>
+                    </button>
+                    <!-- capture="environment" opens the rear camera on supported phones -->
+                    <input class="d-none" type="file" id="camera-input" accept="image/jpeg,image/png,image/webp" capture="environment" aria-label="Take photo">
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" id="btn-upload" class="upload-tile">
+                        <span class="icon-tile"><i class="bi bi-upload" aria-hidden="true"></i></span>
+                        <span class="d-block fw-semibold" data-i18n="uploadImage">Upload Image</span>
+                        <span class="d-block small text-muted-soft">Choose an existing photo</span>
+                    </button>
+                    <input class="d-none" type="file" id="upload-input" accept="image/jpeg,image/png,image/webp" aria-label="Upload image">
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div id="preview-section" class="card-soft d-none mt-4" style="max-width: 720px;">
+                <div class="card-body">
+                    <img id="preview-img" class="preview-image mb-3" src="" alt="Selected crop leaf preview">
+                    <p class="mb-1 fw-semibold" id="file-name">image.jpg</p>
+                    <p class="small text-muted-soft" id="file-size">0 MB</p>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <button type="button" id="btn-analyze" class="btn btn-green btn-lg-action flex-fill" data-i18n="analyze">Analyze Image</button>
+                        <button type="button" id="btn-remove" class="btn btn-outline-green" data-i18n="remove">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading simulation -->
+            <div id="loading-section" class="card-soft d-none mt-4" style="max-width: 720px;">
+                <div class="card-body text-center">
+                    <div class="spinner-border text-success mb-3" role="status"><span class="visually-hidden">Loading…</span></div>
+                    <h2 class="h5">Validating your crop image</h2>
+                    <div class="mt-3">
+                        <p class="loading-stage mb-0" data-i18n="stageUpload">Uploading image…</p>
+                        <p class="loading-stage mb-0" data-i18n="stagePrepare">Preparing image…</p>
+                        <p class="loading-stage mb-0">AI model is not connected in this stage.</p>
+                        <p class="loading-stage mb-0" data-i18n="stageResult">Preparing result…</p>
+                    </div>
+                    <p class="note-box mt-3 mb-0">
+                        The server checks the uploaded image. Real AI analysis will be enabled after the model stages are complete.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/language.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/cloud.bundle.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/scan.js"></script>
+</body>
+</html>
