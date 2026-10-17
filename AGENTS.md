@@ -15,3 +15,4 @@
 - Roles live in `user_roles` (new users get `farmer`); admin access is enforced by RLS via `has_role`. Why: prevents privilege escalation.
 - Scans store an image plus a `not_ready` record; never fabricate predictions until a real model exists.
 - `legacy/django-backend` is reference only, not deployed.
+- The static site's assistant is a same-origin React iframe using AI Elements and the shared Cloud client; chat calls use a bearer-verified TanStack streaming route and owner-scoped account storage. Why: preserves the vanilla site while keeping AI credentials server-only and history private.
