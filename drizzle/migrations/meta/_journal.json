@@ -8,6 +8,13 @@
       "when": 1792132816285,
       "tag": "0000_crop_core",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792239739978,
+      "tag": "0001_assistant_conversation",
+      "breakpoints": true
     }
   ]
 }
