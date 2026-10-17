@@ -1,0 +1,5 @@
+.cdd-assistant-launcher { position: fixed; right: 20px; bottom: 20px; z-index: 1055; display: flex; align-items: center; gap: 10px; height: 56px; border-radius: 28px; padding: 6px 18px 6px 6px; background: var(--primary-green); color: var(--white); border: 1px solid var(--dark-green); box-shadow: var(--shadow-soft); font-weight: 600; }
+.cdd-assistant-launcher:hover, .cdd-assistant-launcher:focus { background: var(--dark-green); color: var(--white); }
+.cdd-assistant-launcher img { width: 42px; height: 42px; border-radius: 50%; }
+.cdd-assistant-frame { position: fixed; right: 20px; bottom: 88px; width: min(400px, calc(100vw - 24px)); height: min(590px, calc(100dvh - 110px)); z-index: 1056; border: 1px solid var(--border-color); border-radius: 12px; background: var(--white); box-shadow: var(--shadow-soft); }
+@media (max-width: 480px) { .cdd-assistant-frame { right: 12px; bottom: 82px; } .cdd-assistant-launcher { right: 12px; bottom: 12px; } }

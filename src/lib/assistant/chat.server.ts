@@ -45,6 +45,17 @@ export async function handleAssistantChat(request: Request) {
       onFinish: async ({ messages: completed }) => { await save(completed); },
       onError: (error) => error instanceof Error ? error.message : "The assistant could not reply. Please try again.",
     });
+    const upstream = await call.upstreamResponse;
+    if (upstream && !upstream.ok) {
+      const payload = await upstream.json().catch(() => ({})) as { message?: string; error?: { message?: string }; type?: string };
+      const reason = payload.message || payload.error?.message || `The assistant is unavailable (${upstream.status}).`;
+      if (upstream.status === 402 || upstream.status === 403) {
+        const { error } = await supabaseAdmin.from("assistant_access_state").upsert({ id: "gateway", status: upstream.status, reason });
+        if (error) throw new Error("Assistant access is blocked and its availability could not be saved.");
+      }
+      await stream.body?.cancel();
+      return new Response(reason, { status: upstream.status });
+    }
     return await withLovableAiGatewayRunIdHeader(stream, call.gateway);
   } catch (error) {
     if (request.signal.aborted) return new Response(null, { status: 499 });
