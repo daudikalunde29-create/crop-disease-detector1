@@ -79,6 +79,9 @@ function statusBadge(status) {
    --------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   applyLanguage();
+  var assistantScript = document.createElement("script");
+  assistantScript.src = "/site/js/assistant-widget.js";
+  document.body.appendChild(assistantScript);
 
   var langButtons = document.querySelectorAll("[data-lang]");
   for (var i = 0; i < langButtons.length; i++) {

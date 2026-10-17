@@ -1,0 +1,11 @@
+CREATE TABLE public.assistant_conversations (user_id uuid PRIMARY KEY DEFAULT auth.uid(), messages jsonb NOT NULL DEFAULT '[]'::jsonb, updated_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.assistant_conversations TO authenticated;
+GRANT ALL ON public.assistant_conversations TO service_role;
+ALTER TABLE public.assistant_conversations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "read own assistant conversation" ON public.assistant_conversations FOR SELECT TO authenticated USING (user_id = auth.uid());
+CREATE POLICY "insert own assistant conversation" ON public.assistant_conversations FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+CREATE POLICY "update own assistant conversation" ON public.assistant_conversations FOR UPDATE TO authenticated USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+CREATE POLICY "delete own assistant conversation" ON public.assistant_conversations FOR DELETE TO authenticated USING (user_id = auth.uid());
+CREATE TABLE public.assistant_access_state (id text PRIMARY KEY, reason text NOT NULL, status integer NOT NULL DEFAULT 403, updated_at timestamptz NOT NULL DEFAULT now());
+GRANT ALL ON public.assistant_access_state TO service_role;
+ALTER TABLE public.assistant_access_state ENABLE ROW LEVEL SECURITY;

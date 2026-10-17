@@ -142,3 +142,22 @@
     color: var(--color-foreground);
   }
 }
+
+.crop-assistant {
+  --primary: #2e7d32;
+  --primary-foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #263238;
+  --secondary: #edf5ed;
+  --secondary-foreground: #1b5e20;
+  --muted: #f5f8f5;
+  --muted-foreground: #5f6b70;
+  --border: #e3eae3;
+  --input: #e3eae3;
+  --ring: #2e7d32;
+  --accent: #edf5ed;
+  --accent-foreground: #1b5e20;
+  font-family: Arial, sans-serif;
+}
+.crop-assistant a { color: var(--primary); }
+.crop-assistant .user-message { background: var(--primary); color: var(--primary-foreground); }

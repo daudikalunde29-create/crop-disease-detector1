@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      assistant_access_state: {
+        Row: {
+          id: string
+          reason: string
+          status: number
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          reason: string
+          status?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          reason?: string
+          status?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      assistant_conversations: {
+        Row: {
+          messages: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          messages?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          messages?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
